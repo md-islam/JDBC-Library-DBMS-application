@@ -7,6 +7,6 @@ public class Author {
    
    
    public String getAllNames(){
-	   return "";
+	   return " ";
    }
 }

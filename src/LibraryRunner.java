@@ -151,20 +151,58 @@ public class LibraryRunner {
 		}
 	}
 	
-	public static void startLibraryApplication(){
+	
+	//Initiate Book Data Management System
+	public static void startLibraryApplication() throws SQLException{
 		int choice;
 		Book b = new Book(conn);
 		Scanner in = new Scanner(System.in);
 		System.out.println("Choose an SQL operation from below");
 		System.out.println("1. Select all authors from the authors table. "+ 
-							"Order the information alphabetically by the author’s last name and first name.");
+							"Order the information alphabetically by the author’s last name and first name. \n"+
+						   "2. Select all publishers from the publishers table. \n"+
+						   "3. Select a specific publisher and list all books published by that publisher. \n" +
+						   	   "   This includes the ttle, year and ISBN number ordered alphabetically by title. \n"+
+						   "4. Add New Author \n"+
+						   "5. Edit/Update the existing information about an author \n"+
+						   "6. Add a new title for an author \n"+
+						   "7. Add a new Publisher \n"+
+						   "8. Edit/ Update the existing informaiton about a publisher");
 		do{
 		choice = in.nextInt();
 		switch(choice){
 		case 1: 
 			System.out.println("You have chosen 1");
 			b.printAllAuthors();			
-			break; 
+			break;
+		case 2: 
+			System.out.println("You have chosen 2");
+			b.printAllPublishers();			
+			break;
+		case 3: 
+			System.out.println("You have chosen 3");
+			b.listBooksByPublisherEntered();			
+			break;
+		case 4: 
+			System.out.println("You have chosen 4");
+			b.addNewAuthor();		
+			break;
+		case 5: 
+			System.out.println("You have chosen 5");
+			b.changeAuthorInformation();			
+			break;
+		case 6: 
+			System.out.println("You have chosen 6");
+			b.addTitleForAnAuthor();			
+			break;
+		case 7: 
+			System.out.println("You have chosen 7");
+			b.addNewPublisher();			
+			break;
+		case 8: 
+			System.out.println("You have chosen 8");
+			b.printAllAuthors();			
+			break;
 		default: 
 			System.out.println("Invalid choice");
 		}
