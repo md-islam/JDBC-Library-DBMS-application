@@ -118,64 +118,7 @@ public class Book {
 		}
 	}
 	
-	public void changeAuthorInformation(){
-		//enter author ID and lastName and check
-		//if it exists in the database
-		//if true, change, else dont 
-		try{
-			Scanner in = new Scanner(System.in);
-			PreparedStatement checkstmt = null;
-			System.out.println("Enter the author's ID");
-			int author_id = in.nextInt();
-			in.nextLine();
-			System.out.println("Enter the author's last name");
-			String author_lastName = in.nextLine();
-			
-			String authorTupleQuery = "SELECT * "+
-									  "FROM Author "+
-									  "WHERE authorID = ? AND lastName = ?";
-			checkstmt = conn.prepareStatement(authorTupleQuery);
-			checkstmt.setInt(1, author_id);
-			checkstmt.setString(2, author_lastName);
-			ResultSet checkResultsSET = checkstmt.executeQuery();
-			//checkstmt.close();
-			
-//          check if author is available in the database.
-			if(!checkResultsSET.next()){
-				System.out.println("There are no records in the database");
-				checkstmt.close();
-			}
-//          enter else statement here
-			else
-			{
-				checkstmt.close();
-			System.out.println("Record found, enter the Author's NEW FULL NAME seperated by a space -->");
-			String fullName = in.nextLine();			
-			String[] splitName = fullName.split("\\s");
-			String firstName = splitName[0];
-			String lastName = splitName[1];
-			PreparedStatement stmt = null;
-			String updateAuthorSQL = "UPDATE AUTHOR SET firstName=?, lastName=? "+
-											   "WHERE lastName = ? AND authorID = ?";
-			stmt = conn.prepareStatement(updateAuthorSQL);
-			stmt.setString(1, firstName);
-			stmt.setString(2, lastName);
-			stmt.setString(3, author_lastName);
-			stmt.setInt(4, author_id);
-			
-			stmt.executeUpdate();
-			System.out.println("Data updated in author relation");
-			stmt.close();
-			in.close();
-			}
-			}
-			catch(SQLException se){
-				se.printStackTrace();
-			}
-			catch(Exception e){
-				e.printStackTrace();
-			}
-		}
+	
 	
 	
 	public void addTitleForAnAuthor(){ 
@@ -189,29 +132,75 @@ public class Book {
 //		        ->  the #isbn and the #ID --
 		try{ 
 			Scanner in = new Scanner(System.in); 
-			PreparedStatement stmt = null; 
-			String title; 
-			char ISBN; 
-			int editionNumber;  
-			char copyright;  
-			double bookPrice; 
-			String insertIntoTITLE = "INSERT INTO AUTHOR (isbn, title, editionNumber, copyright, publisherID, price)"+
+			PreparedStatement stmt = null;
+			System.out.println("Enter the title of the book");
+			String title = in.nextLine();
+			System.out.println("Enter the ISBN of the book");
+			String ISBN = in.nextLine();
+			System.out.println("Enter the edition number of the book");
+			int editionNumber = in.nextInt();
+			in.nextLine();
+			System.out.println("Enter the copyright information of the book");
+			String copyright = in.nextLine();
+			System.out.println("Enter publisher ID");
+			int publisherID = in.nextInt();
+			in.nextLine();
+			System.out.println("Enter book price");
+			double bookPrice = in.nextDouble();
+			in.nextLine();
+			
+			
+			//insert into TITLE TABLE
+			String insertIntoTITLE = "INSERT INTO TITLE (isbn, title, editionNumber, copyright, publisherID, price)"+
 							"VALUES(?,?,?,?,?,?)";
 			//prepare the statements
+			stmt = conn.prepareStatement(insertIntoTITLE);
+			stmt.setString(1, ISBN);
+			stmt.setString(2, title);
+			stmt.setInt(3, editionNumber);
+			stmt.setString(4, copyright);
+			stmt.setInt(5, publisherID);
+			stmt.setDouble(6, bookPrice);
+			stmt.executeUpdate();
+			
+			
+			System.out.println("Enter the full name of the author! --> ");
 			//get author first name and last name
-			String author_first_name; // unfinished 
-			String author_last_name;  // unfinished
+			String fullName = in.nextLine();
+			String[] splitName = fullName.split("\\s");
+			String author_first_name = splitName[0];
+			String author_last_name = splitName[1];
 			String getAuthorInformation ="SELECT * from Author WHERE "+
 										 "firstName = ? AND lastName = ?";
+			stmt = conn.prepareStatement(getAuthorInformation);
+			stmt.setString(1,author_first_name);
+			stmt.setString(2, author_last_name);
+			ResultSet rs = stmt.executeQuery();
+			
 			//extract ID information from preparedquery 
-			int author_ID;			
+			int extracted_author_ID = rs.getInt("authorID");			
+			
+			
+			
+			//final insert into author isbn table to complete this section. 
 			String insertIntoAUTHORISBN = "INSERT INTO authorISBN(authorID, isbn) VALUES (?,?)";
+			stmt = conn.prepareStatement(insertIntoAUTHORISBN); 
+			stmt.setInt(1, extracted_author_ID);
+			stmt.setString(2, ISBN); 
+			stmt.executeUpdate();
+			
+			stmt.close();
+			
 			
 		}
+		catch(SQLException se){
+			se.printStackTrace();
+		}
+		
 		catch(Exception e){
 			e.printStackTrace();
 		}
-				
+						
 	}
 	
 	public void addNewPublisher(){
@@ -236,12 +225,119 @@ public class Book {
 			}
 		
 	}
-	
 	public void changePublisherInformation(){
-		
-	}
-	  
+		//enter author ID and lastName and check
+		//if it exists in the database
+		//if true, change, else dont 
+		try{
+			Scanner in = new Scanner(System.in);
+			PreparedStatement checkstmt = null;
+			System.out.println("Enter the publisher's ID");
+			int publisher_id = in.nextInt();
+			in.nextLine();
+			System.out.println("Enter the publisher's name correctly");
+			String publisher_name = in.nextLine();
+			String modified = '%'+publisher_name+'%';
+			String publisherTupleQuery = "SELECT * "+
+									  "FROM Publisher "+
+									  "WHERE publisherID = ? AND publisherName like ?";
+			checkstmt = conn.prepareStatement(publisherTupleQuery);
+			checkstmt.setInt(1, publisher_id);
+			checkstmt.setString(2, modified);
+			ResultSet checkResultsSET = checkstmt.executeQuery();
+			//checkstmt.close();
+			
+//          check if author is available in the database.
+			if(!checkResultsSET.next()){
+				System.out.println("There are no records in the database");
+				checkstmt.close();
+			}
+//          enter else statement here
+			else
+			{
+				checkstmt.close();
+			System.out.println("Record found, enter the Publisher's NEW NAME seperated by a space -->");
+			String newPublisherName = in.nextLine();			
+			PreparedStatement stmt = null;
+			String updatePublisherTuple = "UPDATE Publisher SET publisherName=? "+
+											   "WHERE publisherID = ?";
+			stmt = conn.prepareStatement(updatePublisherTuple);
+			stmt.setString(1, newPublisherName);
+			stmt.setInt(2, publisher_id);
+			
+			stmt.executeUpdate();
+			System.out.println("Data updated in Publisher relation");
+			stmt.close();
+			in.close();
+			}
+			}
+			catch(SQLException se){
+				se.printStackTrace();
+			}
+			catch(Exception e){
+				e.printStackTrace();
+			}
+		}
+	
+	public void changeAuthorInformation(){
+		//enter author ID and lastName and check
+				//if it exists in the database
+				//if true, change, else dont 
+				try{
+					Scanner in = new Scanner(System.in);
+					PreparedStatement checkstmt = null;
+					System.out.println("Enter the author's ID");
+					int author_id = in.nextInt();
+					in.nextLine();
+					System.out.println("Enter the author's last name");
+					String author_lastName = in.nextLine();
+					
+					String authorTupleQuery = "SELECT * "+
+											  "FROM Author "+
+											  "WHERE authorID = ? AND lastName = ?";
+					checkstmt = conn.prepareStatement(authorTupleQuery);
+					checkstmt.setInt(1, author_id);
+					checkstmt.setString(2, author_lastName);
+					ResultSet checkResultsSET = checkstmt.executeQuery();
+					//checkstmt.close();
+					
+//		          check if author is available in the database.
+					if(!checkResultsSET.next()){
+						System.out.println("There are no records in the database");
+						checkstmt.close();
+					}
+//		          enter else statement here
+					else
+					{
+						checkstmt.close();
+					System.out.println("Record found, enter the Author's NEW FULL NAME seperated by a space -->");
+					String fullName = in.nextLine();			
+					String[] splitName = fullName.split("\\s");
+					String firstName = splitName[0];
+					String lastName = splitName[1];
+					PreparedStatement stmt = null;
+					String updateAuthorSQL = "UPDATE AUTHOR SET firstName=?, lastName=? "+
+													   "WHERE lastName = ? AND authorID = ?";
+					stmt = conn.prepareStatement(updateAuthorSQL);
+					stmt.setString(1, firstName);
+					stmt.setString(2, lastName);
+					stmt.setString(3, author_lastName);
+					stmt.setInt(4, author_id);
+					
+					stmt.executeUpdate();
+					System.out.println("Data updated in author relation");
+					stmt.close();
+					in.close();
+					}
+					}
+					catch(SQLException se){
+						se.printStackTrace();
+					}
+					catch(Exception e){
+						e.printStackTrace();
+					}
 
 }
+	}
 	
 

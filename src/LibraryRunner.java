@@ -201,7 +201,7 @@ public class LibraryRunner {
 			break;
 		case 8: 
 			System.out.println("You have chosen 8");
-			b.printAllAuthors();			
+			b.changePublisherInformation();			
 			break;
 		default: 
 			System.out.println("Invalid choice");
