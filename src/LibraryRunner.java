@@ -157,6 +157,7 @@ public class LibraryRunner {
 		int choice;
 		Book b = new Book(conn);
 		Scanner in = new Scanner(System.in);
+		System.out.println("===========================================================");
 		System.out.println("Choose an SQL operation from below");
 		System.out.println("1. Select all authors from the authors table. "+ 
 							"Order the information alphabetically by the author’s last name and first name. \n"+
@@ -167,56 +168,57 @@ public class LibraryRunner {
 						   "5. Edit/Update the existing information about an author \n"+
 						   "6. Add a new title for an author \n"+
 						   "7. Add a new Publisher \n"+
-						   "8. Edit/ Update the existing informaiton about a publisher");
+						   "8. Edit/Update the existing informaiton about a publisher \n"+
+						   "9. EXIT THE LIBRARY APPLICATION");
 		do{
 		choice = in.nextInt();
 		switch(choice){
 		case 1: 
 			System.out.println("You have chosen 1");
+			System.out.println("===========================================================");
 			b.printAllAuthors();			
-			break;
+			startLibraryApplication();
 		case 2: 
 			System.out.println("You have chosen 2");
+			System.out.println("===========================================================");
 			b.printAllPublishers();			
-			break;
+		    startLibraryApplication();
 		case 3: 
 			System.out.println("You have chosen 3");
+			System.out.println("===========================================================");
 			b.listBooksByPublisherEntered();			
-			break;
+		    startLibraryApplication();
 		case 4: 
 			System.out.println("You have chosen 4");
+			System.out.println("===========================================================");
 			b.addNewAuthor();		
-			break;
+		    startLibraryApplication();
 		case 5: 
 			System.out.println("You have chosen 5");
+			System.out.println("===========================================================");
 			b.changeAuthorInformation();			
-			break;
+		    startLibraryApplication();
 		case 6: 
 			System.out.println("You have chosen 6");
+			System.out.println("===========================================================");
 			b.addTitleForAnAuthor();			
-			break;
+			startLibraryApplication();
 		case 7: 
 			System.out.println("You have chosen 7");
+			System.out.println("===========================================================");
 			b.addNewPublisher();			
-			break;
+			startLibraryApplication();
 		case 8: 
 			System.out.println("You have chosen 8");
+			System.out.println("===========================================================");
 			b.changePublisherInformation();			
+			startLibraryApplication();
+		case 9: 
+			System.out.println("EXITING......");
 			break;
 		default: 
 			System.out.println("Invalid choice");
 		}
-			
-			
-		}while(choice<1 || choice > 8);
-		
-		
-		
-		
-		
-		
-	}
-	
-	
-	
+		}while(choice<1 || choice > 9);
+		}
 }
